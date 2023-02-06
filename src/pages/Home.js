@@ -1,6 +1,7 @@
 import React from "react";
 import { Button, Card, Col, Container, Row } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
+import FeaturedProducts from "../components/FeaturedProducts";
 import Services from "../components/services";
 import HomeImage from "../images/hero.jpg";
 
@@ -35,6 +36,7 @@ const Home = () => {
           </Col>
         </Row>
       </Card>
+      <FeaturedProducts />
       <Container className="d-none d-lg-block">
         <Services />
       </Container>

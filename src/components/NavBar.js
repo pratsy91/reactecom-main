@@ -1,19 +1,24 @@
 import React from "react";
 import { Navbar, Nav, Button, Badge } from "react-bootstrap";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import imageUrl from "../images/logo.png";
 import { FiShoppingCart } from "react-icons/fi";
 
 const NavBar = () => {
+  const navigate = useNavigate();
+  const navBarHandler = () => {
+    navigate("/");
+  };
   return (
     <Navbar bg="light" variant="light" fixed="top" expand="lg">
       <Navbar.Brand>
         <span>
           <img
             src={imageUrl}
-            style={{ width: "100px" }}
+            style={{ width: "100px", cursor: "pointer" }}
             alt="logo "
             className="ms-5"
+            onClick={navBarHandler}
           />
         </span>
       </Navbar.Brand>
