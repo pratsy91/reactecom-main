@@ -1,14 +1,21 @@
 import React from "react";
 import { Navbar, Nav, Button, Badge } from "react-bootstrap";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useRouteLoaderData } from "react-router-dom";
 import imageUrl from "../images/logo.png";
 import { FiShoppingCart } from "react-icons/fi";
 
 const NavBar = () => {
+  const token = useRouteLoaderData("token");
   const navigate = useNavigate();
   const navBarHandler = () => {
     navigate("/");
   };
+
+  const logoutHandler = () => {
+    localStorage.removeItem("token");
+    navigate("/auth?mode=login");
+  };
+
   return (
     <Navbar bg="light" variant="light" fixed="top" expand="lg">
       <Navbar.Brand>
@@ -69,23 +76,35 @@ const NavBar = () => {
             Contact Us
           </NavLink>
         </Nav>
-        <Nav className="ms-auto me-5">
-          <Button variant="primary" className="mt-3">
-            Login
+        {!token && (
+          <NavLink to="/auth?mode=login" className="ms-auto me-5">
+            <Button variant="primary">Login</Button>
+          </NavLink>
+        )}
+        {token && (
+          <Button
+            variant="danger"
+            className="ms-auto me-3"
+            onClick={logoutHandler}
+          >
+            Logout
           </Button>
-        </Nav>
-        <Nav className="me-5">
-          <Button variant="warning" className="mt-3">
-            <div>
-              <FiShoppingCart />
-              <span className="ms-1">
-                <sup>
-                  <Badge>2</Badge>
-                </sup>
-              </span>
-            </div>
-          </Button>
-        </Nav>
+        )}
+
+        {token && (
+          <Nav className="me-5 mb-3">
+            <Button variant="warning" className="mt-3">
+              <div>
+                <FiShoppingCart />
+                <span className="ms-1">
+                  <sup>
+                    <Badge>2</Badge>
+                  </sup>
+                </span>
+              </div>
+            </Button>
+          </Nav>
+        )}
       </Navbar.Collapse>
     </Navbar>
   );

@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <React.Fragment>
       <Row
-        className="justify-content-center  text-white "
+        className="justify-content-center  text-white position-relative"
         style={{ backgroundColor: "black", width: "100%" }}
       >
         <Col lg={3} className="mt-3 offset-2">

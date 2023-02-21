@@ -1,11 +1,167 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { getProducts } from "../store/Requests";
+import FormatPrice from "../util/FormatPrice";
 
 const Products = () => {
+  const loadedproducts = useSelector(
+    (state) => state.getProductReducer.products
+  );
+
+  const [products, setProducts] = useState(loadedproducts);
+  const dispatch = useDispatch();
+
+  const selectRef = useRef();
+  const filterRef = useRef();
+
+  const category = ["All", "mobile", "laptop", "accessories", "watch"];
+
+  useEffect(() => {
+    dispatch(getProducts());
+  }, [dispatch]);
+
+  const filterHandler = () => {
+    const cat = filterRef.current.value;
+    if (cat && cat !== "All") {
+      const filteredProducts = loadedproducts.filter((prod) => {
+        return prod.category === cat;
+      });
+      setProducts(filteredProducts);
+      selectRef.current.value = "default";
+    } else {
+      setProducts(loadedproducts);
+      selectRef.current.value = "default";
+    }
+  };
+
+  function comparelh(a, b) {
+    if (a.price < b.price) {
+      return -1;
+    }
+    if (a.price > b.price) {
+      return 1;
+    }
+    return 0;
+  }
+  function comparehl(a, b) {
+    if (a.price > b.price) {
+      return -1;
+    }
+    if (a.price < b.price) {
+      return 1;
+    }
+    return 0;
+  }
+
+  const submitHandler = () => {
+    const inputSelect = selectRef.current.value;
+    if (inputSelect === "name-low") {
+      const newArray = products.slice();
+      const sortedProducts = newArray.sort((a, b) =>
+        a.name.localeCompare(b.name)
+      );
+      setProducts(sortedProducts);
+    } else if (inputSelect === "name-high") {
+      const newArray = products.slice();
+      const sortedProducts = newArray.sort((a, b) =>
+        b.name.localeCompare(a.name)
+      );
+      setProducts(sortedProducts);
+    } else if (inputSelect === "price-low") {
+      const newArray = products.slice();
+      const sortedProducts = newArray.sort(comparelh);
+      setProducts(sortedProducts);
+    } else if (inputSelect === "price-high") {
+      const newArray = products.slice();
+      const sortedProducts = newArray.sort(comparehl);
+      setProducts(sortedProducts);
+    }
+  };
+
   return (
     <React.Fragment>
-      <h1 style={{ marginTop: "100px" }} className="text-center">
-        Products
-      </h1>
+      <Row className="justify-content-evenly">
+        <Col lg={2}>
+          <Card
+            style={{ width: "250px", marginTop: "180px" }}
+            bg="light"
+            className="mb-5"
+          >
+            <Container className="p-5">
+              <h5 className=" offset-3 mb-5">Category</h5>
+
+              <Form.Select
+                className="w-100 m-3 ms-auto"
+                onChange={filterHandler}
+                ref={filterRef}
+              >
+                {category.map((cat) => (
+                  <option value={cat}>{cat}</option>
+                ))}
+              </Form.Select>
+
+              {/* <div className="text-center">
+                {category.map((cat) => (
+                  <p
+                    style={{ cursor: "pointer" }}
+                    onClick={() => filterHandler(cat)}
+                    key={cat}
+                  >
+                    {cat}
+                  </p>
+                ))}
+              </div> */}
+            </Container>
+          </Card>
+        </Col>
+        <Col lg={8}>
+          <Row style={{ marginTop: "150px", marginBottom: "50px" }}>
+            <Card bg="light">
+              <Col>
+                <Form.Select
+                  className="w-25 m-3 ms-auto"
+                  onChange={submitHandler}
+                  ref={selectRef}
+                >
+                  <option value="default">Sort products by</option>
+                  <option value="name-low">by name(A-Z)</option>
+                  <option value="name-high">by name(Z-A)</option>
+                  <option value="price-low">by price(lowest-highest)</option>
+                  <option value="price-high">by price(highest-lowest)</option>
+                </Form.Select>
+              </Col>
+            </Card>
+          </Row>
+          <Row className="justify-content-center g-4 " lg={3}>
+            {products.map((prod) => (
+              <Col key={prod.id} className="mb-5">
+                <Card>
+                  <Link
+                    to={`/products/${prod.id}`}
+                    className="text-decoration-none"
+                  >
+                    <Card.Img variant="top" src={prod.image} height="200px" />
+                    <Card.Footer>
+                      <Container className="d-flex justify-content-between">
+                        <span>{prod.name}</span>
+                        <span className="text-primary">
+                          {<FormatPrice price={prod.price} />}
+                        </span>
+                      </Container>
+                    </Card.Footer>
+                  </Link>
+                  <Button className="m-2" variant="warning">
+                    Add to Cart
+                  </Button>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        </Col>
+      </Row>
+      <Container className="d-flex  justify-content-center"></Container>
     </React.Fragment>
   );
 };
