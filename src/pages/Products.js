@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { getProducts } from "../store/Requests";
+import { cartActions } from "../store/CartSlice";
+import { getCart, getProducts, sendCart, updateCart } from "../store/Requests";
 import FormatPrice from "../util/FormatPrice";
 
 const Products = () => {
@@ -12,6 +13,7 @@ const Products = () => {
 
   const [products, setProducts] = useState(loadedproducts);
   const dispatch = useDispatch();
+  const cartProducts = useSelector((state) => state.cartReducer.cartProducts);
 
   const selectRef = useRef();
   const filterRef = useRef();
@@ -80,6 +82,30 @@ const Products = () => {
     }
   };
 
+  const addHandler = (product) => {
+    const newProduct = {
+      id: product.id,
+      image: product.image,
+      quantity: 1,
+      name: product.name,
+    };
+    dispatch(getCart());
+    if (cartProducts.length === 0) {
+      dispatch(sendCart(newProduct));
+    } else {
+      const existingProduct = cartProducts.find((prod) => {
+        return prod.id === newProduct.id;
+      });
+      if (!existingProduct) {
+        dispatch(sendCart(newProduct));
+      } else {
+        const quantity = existingProduct.quantity + newProduct.quantity;
+        const updatedProduct = { ...newProduct, quantity: quantity };
+        dispatch(updateCart(updatedProduct));
+      }
+    }
+  };
+
   return (
     <React.Fragment>
       <Row className="justify-content-evenly">
@@ -98,21 +124,11 @@ const Products = () => {
                 ref={filterRef}
               >
                 {category.map((cat) => (
-                  <option value={cat}>{cat}</option>
+                  <option value={cat} key={cat}>
+                    {cat}
+                  </option>
                 ))}
               </Form.Select>
-
-              {/* <div className="text-center">
-                {category.map((cat) => (
-                  <p
-                    style={{ cursor: "pointer" }}
-                    onClick={() => filterHandler(cat)}
-                    key={cat}
-                  >
-                    {cat}
-                  </p>
-                ))}
-              </div> */}
             </Container>
           </Card>
         </Col>
@@ -152,7 +168,11 @@ const Products = () => {
                       </Container>
                     </Card.Footer>
                   </Link>
-                  <Button className="m-2" variant="warning">
+                  <Button
+                    className="m-2"
+                    variant="warning"
+                    onClick={() => addHandler(prod)}
+                  >
                     Add to Cart
                   </Button>
                 </Card>

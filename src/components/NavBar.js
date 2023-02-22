@@ -3,8 +3,12 @@ import { Navbar, Nav, Button, Badge } from "react-bootstrap";
 import { NavLink, useNavigate, useRouteLoaderData } from "react-router-dom";
 import imageUrl from "../images/logo.png";
 import { FiShoppingCart } from "react-icons/fi";
+import { useDispatch } from "react-redux";
+import { cartActions } from "../store/CartSlice";
+import { getCart } from "../store/Requests";
 
 const NavBar = () => {
+  const dispatch = useDispatch();
   const token = useRouteLoaderData("token");
   const navigate = useNavigate();
   const navBarHandler = () => {
@@ -14,6 +18,11 @@ const NavBar = () => {
   const logoutHandler = () => {
     localStorage.removeItem("token");
     navigate("/auth?mode=login");
+  };
+
+  const showCart = () => {
+    dispatch(cartActions.showCart());
+    dispatch(getCart());
   };
 
   return (
@@ -93,7 +102,7 @@ const NavBar = () => {
 
         {token && (
           <Nav className="me-5 mb-3">
-            <Button variant="warning" className="mt-3">
+            <Button variant="warning" className="mt-3" onClick={showCart}>
               <div>
                 <FiShoppingCart />
                 <span className="ms-1">

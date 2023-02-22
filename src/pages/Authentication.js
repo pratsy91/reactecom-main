@@ -68,6 +68,8 @@ export async function authAction({ request }) {
     email: formData.get("email"),
     password: formData.get("password"),
   };
+  const emailData = formData.get("email");
+  localStorage.setItem("email", emailData);
   let url = "";
 
   if (mode === "login") {

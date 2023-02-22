@@ -1,15 +1,49 @@
 import { useLoaderData } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Col, Row, Button, Container, Form } from "react-bootstrap";
 import FormatPrice from "../util/FormatPrice";
+import { useDispatch, useSelector } from "react-redux";
+import { cartActions } from "../store/CartSlice";
+import { getCart, sendCart, updateCart } from "../store/Requests";
+// import { sendCart } from "../store/Requests";
 
 const Product = () => {
+  const dispatch = useDispatch();
   const product = useLoaderData();
   const images = product.image;
+  const image = images[0].url;
   const [imageUrl, setImageUrl] = useState(images[0].url);
+  const quantityRef = useRef();
+  const cartProducts = useSelector((state) => state.cartReducer.cartProducts);
 
   const urlHandler = (url) => {
     setImageUrl(url);
+  };
+
+  const submitHandler = (event) => {
+    event.preventDefault();
+    const inputQuantity = parseInt(quantityRef.current.value);
+    const newProduct = {
+      id: product.id,
+      image: image,
+      quantity: inputQuantity,
+      name: product.name,
+    };
+    dispatch(getCart());
+    if (cartProducts.length === 0) {
+      dispatch(sendCart(newProduct));
+    } else {
+      const existingProduct = cartProducts.find((prod) => {
+        return prod.id === newProduct.id;
+      });
+      if (!existingProduct) {
+        dispatch(sendCart(newProduct));
+      } else {
+        const quantity = existingProduct.quantity + newProduct.quantity;
+        const updatedProduct = { ...newProduct, quantity: quantity };
+        dispatch(updateCart(updatedProduct));
+      }
+    }
   };
 
   return (
@@ -46,7 +80,7 @@ const Product = () => {
           <hr />
           <p>Available: {product.stock}</p>
           <Container>
-            <Form>
+            <Form onSubmit={submitHandler}>
               <Row>
                 <Col>
                   <Form.Label>Quantity:</Form.Label>
@@ -56,11 +90,12 @@ const Product = () => {
                     defaultValue="1"
                     max={product.stock}
                     min="1"
+                    ref={quantityRef}
                   />
                 </Col>
 
                 <Col>
-                  <Button variant="warning" className="mt-4">
+                  <Button variant="warning" className="mt-4" type="submit">
                     Add to Cart
                   </Button>
                 </Col>
