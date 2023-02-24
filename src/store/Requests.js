@@ -24,11 +24,13 @@ export function checkAuthLoader() {
 export const getProducts = () => {
   return async (dispatch) => {
     const sendRequest = async () => {
+      dispatch(getProductsActions.setLoading());
       const response = await fetch("https://api.pujakaitem.com/api/products");
       return response;
     };
     try {
       const response = await sendRequest();
+      dispatch(getProductsActions.setLoading());
       const data = await response.json();
       dispatch(getProductsActions.setProducts({ products: data }));
     } catch (error) {}
@@ -121,6 +123,31 @@ export const deleteCart = (id) => {
       const emailNode = email.replace(".", "");
       const response = await fetch(
         `https://e-com-app-a54c5-default-rtdb.asia-southeast1.firebasedatabase.app/${emailNode}/${id}.json`,
+        {
+          method: "Delete",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response;
+    };
+    try {
+      const response = await sendRequest();
+
+      if (response.ok) {
+      }
+    } catch (error) {}
+  };
+};
+
+export const deleteCartBack = () => {
+  return async (dispatch) => {
+    const sendRequest = async () => {
+      const email = localStorage.getItem("email");
+      const emailNode = email.replace(".", "");
+      const response = await fetch(
+        `https://e-com-app-a54c5-default-rtdb.asia-southeast1.firebasedatabase.app/${emailNode}.json`,
         {
           method: "Delete",
           headers: {

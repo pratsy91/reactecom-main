@@ -17,8 +17,13 @@ const Authentication = () => {
     <React.Fragment>
       <Container
         className="d-grid justify-content-center"
-        style={{ marginTop: "150px" }}
+        style={{ marginTop: "120px" }}
       >
+        {isLoginMode ? (
+          <h1 className="text-center text-secondary">Login to Contine</h1>
+        ) : (
+          <h1 className="text-center text-secondary">Signup to Register</h1>
+        )}
         <Card className="  m-5" style={{ width: "600px" }}>
           <Form method="post" className="p-5">
             <Row className="mb-3">

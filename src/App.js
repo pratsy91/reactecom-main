@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ContactUs from "./pages/ContactUs";
 import Home from "./pages/Home";
@@ -8,7 +8,8 @@ import About from "./pages/About";
 import Error from "./pages/Error";
 import Product, { productLoader } from "./pages/Product";
 import Authentication, { authAction } from "./pages/Authentication";
-import { checkAuthLoader, tokenLoader } from "./store/Requests";
+import { checkAuthLoader, getProducts, tokenLoader } from "./store/Requests";
+import { useDispatch } from "react-redux";
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,11 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getProducts());
+  }, [dispatch]);
+
   return <RouterProvider router={router}></RouterProvider>;
 };
 

@@ -3,9 +3,7 @@ import React, { useRef, useState } from "react";
 import { Col, Row, Button, Container, Form } from "react-bootstrap";
 import FormatPrice from "../util/FormatPrice";
 import { useDispatch, useSelector } from "react-redux";
-import { cartActions } from "../store/CartSlice";
 import { getCart, sendCart, updateCart } from "../store/Requests";
-// import { sendCart } from "../store/Requests";
 
 const Product = () => {
   const dispatch = useDispatch();
@@ -44,6 +42,10 @@ const Product = () => {
         dispatch(updateCart(updatedProduct));
       }
     }
+  };
+
+  const addHandler = () => {
+    dispatch(getCart());
   };
 
   return (
@@ -95,7 +97,12 @@ const Product = () => {
                 </Col>
 
                 <Col>
-                  <Button variant="warning" className="mt-4" type="submit">
+                  <Button
+                    variant="warning"
+                    className="mt-4"
+                    type="submit"
+                    onClick={addHandler}
+                  >
                     Add to Cart
                   </Button>
                 </Col>

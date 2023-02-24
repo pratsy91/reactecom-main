@@ -3,17 +3,22 @@ import { Navbar, Nav, Button, Badge } from "react-bootstrap";
 import { NavLink, useNavigate, useRouteLoaderData } from "react-router-dom";
 import imageUrl from "../images/logo.png";
 import { FiShoppingCart } from "react-icons/fi";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { cartActions } from "../store/CartSlice";
 import { getCart } from "../store/Requests";
 
 const NavBar = () => {
   const dispatch = useDispatch();
+  const cartProducts = useSelector((state) => state.cartReducer.cartProducts);
   const token = useRouteLoaderData("token");
   const navigate = useNavigate();
   const navBarHandler = () => {
     navigate("/");
   };
+
+  const numofCartProducts = cartProducts.reduce((total, prod) => {
+    return total + prod.quantity;
+  }, 0);
 
   const logoutHandler = () => {
     localStorage.removeItem("token");
@@ -107,7 +112,7 @@ const NavBar = () => {
                 <FiShoppingCart />
                 <span className="ms-1">
                   <sup>
-                    <Badge>2</Badge>
+                    <Badge>{numofCartProducts}</Badge>
                   </sup>
                 </span>
               </div>

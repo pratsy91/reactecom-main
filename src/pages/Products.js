@@ -1,12 +1,21 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
+import React, { useRef, useState } from "react";
+import {
+  Button,
+  Card,
+  Col,
+  Container,
+  Form,
+  Row,
+  Spinner,
+} from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { cartActions } from "../store/CartSlice";
-import { getCart, getProducts, sendCart, updateCart } from "../store/Requests";
+import { getCart, sendCart, updateCart } from "../store/Requests";
 import FormatPrice from "../util/FormatPrice";
 
 const Products = () => {
+  const isLoading = useSelector((state) => state.getProductReducer.isLoading);
+  console.log("🚀 ~ file: Products.js:19 ~ Products ~ isLoading:", isLoading);
   const loadedproducts = useSelector(
     (state) => state.getProductReducer.products
   );
@@ -19,10 +28,6 @@ const Products = () => {
   const filterRef = useRef();
 
   const category = ["All", "mobile", "laptop", "accessories", "watch"];
-
-  useEffect(() => {
-    dispatch(getProducts());
-  }, [dispatch]);
 
   const filterHandler = () => {
     const cat = filterRef.current.value;
@@ -103,8 +108,24 @@ const Products = () => {
         const updatedProduct = { ...newProduct, quantity: quantity };
         dispatch(updateCart(updatedProduct));
       }
+      dispatch(getCart());
     }
   };
+
+  const clearFilterHandler = () => {
+    filterRef.current.value = category[0];
+
+    selectRef.current.value = "default";
+    setProducts(loadedproducts);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="text-center">
+        <Spinner variant="primary" animation="border" />
+      </div>
+    );
+  }
 
   return (
     <React.Fragment>
@@ -123,13 +144,21 @@ const Products = () => {
                 onChange={filterHandler}
                 ref={filterRef}
               >
-                {category.map((cat) => (
-                  <option value={cat} key={cat}>
-                    {cat}
-                  </option>
-                ))}
+                {!isLoading &&
+                  category.map((cat) => (
+                    <option value={cat} key={cat}>
+                      {cat}
+                    </option>
+                  ))}
               </Form.Select>
             </Container>
+            <h5
+              className="text-center mb-4 text-danger"
+              style={{ cursor: "pointer" }}
+              onClick={clearFilterHandler}
+            >
+              Clear All Filters
+            </h5>
           </Card>
         </Col>
         <Col lg={8}>
