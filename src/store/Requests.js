@@ -58,6 +58,7 @@ export const sendCart = (product) => {
       const response = await sendRequest();
 
       if (response.ok) {
+        dispatch(getCart());
       }
     } catch (error) {}
   };
@@ -111,6 +112,7 @@ export const updateCart = (product) => {
       const response = await sendRequest();
 
       if (response.ok) {
+        dispatch(getCart());
       }
     } catch (error) {}
   };
@@ -136,6 +138,7 @@ export const deleteCart = (id) => {
       const response = await sendRequest();
 
       if (response.ok) {
+        dispatch(getCart());
       }
     } catch (error) {}
   };

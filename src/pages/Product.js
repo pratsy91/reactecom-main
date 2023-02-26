@@ -27,7 +27,7 @@ const Product = () => {
       quantity: inputQuantity,
       name: product.name,
     };
-    dispatch(getCart());
+
     if (cartProducts.length === 0) {
       dispatch(sendCart(newProduct));
     } else {

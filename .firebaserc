@@ -1,0 +1,9 @@
+{
+  "projects": {
+    "default": "paras-ecom-d0c49",
+    "mail-box": "mail-box-bbdee",
+    "paras-ecom": "paras-ecom-d0c49"
+  },
+  "targets": {},
+  "etags": {}
+}

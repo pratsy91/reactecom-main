@@ -16,7 +16,6 @@ const Cart = () => {
   const show = useSelector((state) => state.cartReducer.show);
   const cartProducts = useSelector((state) => state.cartReducer.cartProducts);
   const [purchase, setPurchase] = useState(false);
-  console.log("🚀 ~ file: CartModal.js:13 ~ Cart ~ purchase:", purchase);
 
   const handleClose = () => {
     dispatch(cartActions.CloseCart());
@@ -25,31 +24,25 @@ const Cart = () => {
   };
 
   const deleteHandler = (id) => {
-    dispatch(getCart());
     const existingProduct = cartProducts.find((prod) => {
       return prod.id === id;
     });
     if (existingProduct.quantity === 1) {
       dispatch(deleteCart(id));
-      dispatch(getCart());
     } else {
       const quantity = existingProduct.quantity - 1;
       const updatedProduct = { ...existingProduct, quantity: quantity };
       dispatch(updateCart(updatedProduct));
-      dispatch(getCart());
     }
   };
 
   const addHandler = (id) => {
-    dispatch(getCart());
-
     const existingProduct = cartProducts.find((prod) => {
       return prod.id === id;
     });
     const quantity = existingProduct.quantity + 1;
     const updatedProduct = { ...existingProduct, quantity: quantity };
     dispatch(updateCart(updatedProduct));
-    dispatch(getCart());
   };
 
   const purchaseHandler = () => {

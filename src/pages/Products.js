@@ -10,7 +10,7 @@ import {
 } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { getCart, sendCart, updateCart } from "../store/Requests";
+import { sendCart, updateCart } from "../store/Requests";
 import FormatPrice from "../util/FormatPrice";
 
 const Products = () => {
@@ -94,7 +94,6 @@ const Products = () => {
       quantity: 1,
       name: product.name,
     };
-    dispatch(getCart());
     if (cartProducts.length === 0) {
       dispatch(sendCart(newProduct));
     } else {
@@ -108,7 +107,6 @@ const Products = () => {
         const updatedProduct = { ...newProduct, quantity: quantity };
         dispatch(updateCart(updatedProduct));
       }
-      dispatch(getCart());
     }
   };
 
